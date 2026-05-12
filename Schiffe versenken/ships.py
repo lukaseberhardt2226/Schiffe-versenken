@@ -37,6 +37,31 @@ class Ship:
 
         return positions
 
+    # Schiffe rotieren (Dreht die Schiff-Form um 90 Grad nach rechts)
+    def rotate(self):
+
+        # Neue leere Form erstellen
+        rotated_shape = []
+
+        # Durch alle Spalten gehen
+        for vertical_line in range(len(self.shape[0])):
+
+            # Neue Zeile erstellen
+            new_line = []
+
+            # Von unten nach oben durch die Zeilen gehen
+            for horizontal_line in range(
+
+                len(self.shape) - 1,-1,-1):
+
+                # Werte übernehmen
+                new_line.append(self.shape[horizontal_line][vertical_line])
+
+            # Neue Zeile speichern
+            rotated_shape.append(new_line)
+
+        # Alte Form ersetzen
+        self.shape = rotated_shape
 
 
 two_ship = [

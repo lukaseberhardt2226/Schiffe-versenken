@@ -113,29 +113,6 @@ class BattleShip:
         # Keine Kollision gefunden? schiff darf plaziert werden
         return False
 
-
-    # Schiff rotieren (Dreht die Schiff-Form um 90 Grad)
-    def rotate(self):
-
-        rotated_shape = []
-
-        # Durch alle Spalten gehen
-        for vertical_line in range(len(self.shape[0])):
-
-            new_line = []
-
-            # Von unten nach oben durch die Zeilen gehen
-            for horizontal_line in range(
-                len(self.shape) - 1,-1,-1):
-
-                new_line.append(
-                    self.shape[horizontal_line][vertical_line]
-                                                            )
-
-        rotated_shape.append(new_line)
-
-    self.shape = rotated_shape
-
     # Spielfeld ausgeben (Gibt das Spielfeld im Terminal aus)
     def playingfield_output(self, playingfield):
 
