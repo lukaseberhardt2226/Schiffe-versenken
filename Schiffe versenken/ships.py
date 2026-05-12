@@ -8,6 +8,9 @@ class Ship:
         # Schiffform speichern
         self.shape = shape
 
+        # Originale Schiffform speichern
+        self.original_shape = [line [:] for line in shape]
+
         # Trefferzähler
         self.hits = 0
 

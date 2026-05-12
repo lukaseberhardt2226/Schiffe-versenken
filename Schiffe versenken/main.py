@@ -7,19 +7,24 @@
 # - Treffer / Wasser
 # - Siegbedingung
 
+#----------------------------------------------------------------#
 # Imports
 import random #random wird für zufällige Schiffpositionen und Computerschüsse benötigt.
 import ships
+#----------------------------------------------------------------#
 
-
+#----------------------------------------------------------------#
 # Konfiguration
 fieldsize = 10 # Größe des Spielfelds
 number_of_ships = 5 # Anzahl der Schiffe
+#----------------------------------------------------------------#
 
-
+#----------------------------------------------------------------#
 # Hauptklasse
 class BattleShip:
+#----------------------------------------------------------------#
 
+#----------------------------------------------------------------#
     # Konstruktor
     def __init__(self):
 
@@ -32,7 +37,7 @@ class BattleShip:
         self.computer_field = self.playingfield_create()
 
         
-        # Schiffe erstellen
+        # Spieler Schiffe erstellen
         self.player_ships = [
 
                                 ships.Ship("Two Ship", ships.two_ship),
@@ -42,33 +47,30 @@ class BattleShip:
                                 ships.Ship("T Ship", ships.t_ship)
 
                                                                                 ]
-        # Testpositionen setzen
-        self.player_ships[0].horizontal_line = 0
-        self.player_ships[0].vertical_line = 0
 
-        self.player_ships[1].horizontal_line = 2
-        self.player_ships[1].vertical_line = 2
+        # Spieler platziert Schiffe
+        self.player_place_ships()
 
-        self.player_ships[2].horizontal_line = 4
-        self.player_ships[2].vertical_line = 1
+        # Computer Schiffe erstellen
+        self.computer_ships = [
 
-        self.player_ships[3].horizontal_line = 6
-        self.player_ships[3].vertical_line = 3
+                                ships.Ship("Two Ship", ships.two_ship),
+                                ships.Ship("Three Ship", ships.three_ship),
+                                ships.Ship("Four Ship", ships.four_ship),
+                                ships.Ship("Z Ship", ships.z_ship),
+                                ships.Ship("T Ship", ships.t_ship)
 
-        self.player_ships[4].horizontal_line = 1
-        self.player_ships[4].vertical_line = 6
+                                                                            ]
 
-        # Alle Schiffe platzieren
-        for ship in self.player_ships:
-
-            self.ships_place(ship,self.player_field)
-
-
+        # Computer platziert Schiffe
+        self.computer_place_ships()
+#----------------------------------------------------------------#
     # Spielfeld erstellen (fieldsize = größe, O = unbeschossenes Feld)
     def playingfield_create(self):
         return [["O"] * self.fieldsize for _ in range(self.fieldsize)]
+#----------------------------------------------------------------#
 
-
+#----------------------------------------------------------------#
     # Schiffe platzieren
     def ships_place(self, ship, playingfield):
 
@@ -84,10 +86,10 @@ class BattleShip:
 
             # Schiff ins Spielfeld setzen
             playingfield[horizontal_line][vertical_line] = "■"
-           
+#----------------------------------------------------------------#     
     
+#----------------------------------------------------------------#    
     #Kollisionen prüfen (liegt Schiff außerhalb?, überschneidung anderer Schiffe?)
-
     def check_collision(self, ship, playingfield):
 
         # Alle Positionen des Schiffs holen
@@ -112,7 +114,80 @@ class BattleShip:
 
         # Keine Kollision gefunden? schiff darf plaziert werden
         return False
+#----------------------------------------------------------------#
 
+#----------------------------------------------------------------#
+    #Schiff plazierung Spieler
+    def player_place_ships(self):
+
+    # Alle Schiffe durchgehen
+        for ship in self.player_ships:
+
+            while True:
+
+                print(f"\nPlatziere: {ship.name}")
+
+                # Spielfeld anzeigen
+                self.playingfield_output(self.player_field)
+
+                # Position vom Spieler holen
+                position = self.position_set(self.player_field)
+
+                # Position setzen
+                ship.horizontal_line = position[0]
+                ship.vertical_line = position[1]
+
+                # Rotation abfragen
+                rotate = input("Schiff rotieren? (y/n): ").lower()
+
+                # Schiff drehen
+                if rotate == "y":
+                    ship.rotate()
+
+                # Kollision prüfen
+                if self.check_collision(ship,self.player_field):
+                    print("Ungültige Position")
+                    continue
+
+                # Schiff platzieren
+                self.ships_place(ship,self.player_field)
+                break
+#----------------------------------------------------------------#
+
+#----------------------------------------------------------------#
+    # Computer Schiffe platzieren
+    def computer_place_ships(self):
+
+        # Alle Computer-Schiffe durchgehen
+        for ship in self.computer_ships:
+
+            while True:
+
+                # Schiff zurücksetzen
+                ship.shape = [line [:] for line in ship.original_shape]
+
+                # Zufällige Position erzeugen
+                ship.horizontal_line = random.randint(0,self.fieldsize - 1)
+
+                ship.vertical_line = random.randint(0, self.fieldsize - 1)
+
+                # Zufällige Rotation
+                rotate = random.choice([0, 1])
+
+                # Schiff rotieren
+                if rotate == 1:
+                    ship.rotate()
+
+                # Kollision prüfen
+                if self.check_collision(ship, self.computer_field):
+                    continue
+
+                # Schiff platzieren
+                self.ships_place(ship, self.computer_field)
+                break
+#----------------------------------------------------------------#
+
+#----------------------------------------------------------------#
     # Spielfeld ausgeben (Gibt das Spielfeld im Terminal aus)
     def playingfield_output(self, playingfield):
 
@@ -122,8 +197,9 @@ class BattleShip:
          # Spielfeld Zeile für Zeile ausgeben
         for i, line in enumerate(playingfield):
             print(f"{i + 1:2} " + " ".join(line)) 
+#----------------------------------------------------------------#
 
-
+#----------------------------------------------------------------#
     # Positionen einlesen (Liest Benutzereingaben wie: A3, C4, usw.)
     def position_set(self, playingfield):
         while True:
@@ -158,11 +234,21 @@ class BattleShip:
 
                 # Position zurückgeben
                 return[horizontal_line, vertical_line]
+#----------------------------------------------------------------#
 
+#----------------------------------------------------------------#
 
     # Spiel starten (Hauptschleife Ablauf: Spieler schießt, Com schießt, Spielfelder aktualisieren, Sieg prüfen )
     def start(self):
         print("Schiffe versenken Simulator")
+        #test
+        self.playingfield_output(self.player_field)
+
+        print("\nComputerfeld:")
+        self.playingfield_output(self.computer_field)
+
+        return
+        #test ende
 
         # Computerfeld anzeigen
         self.playingfield_output(self.player_field)
@@ -239,7 +325,9 @@ class BattleShip:
             # Punktestand anzeigen
             else: 
                 print(f"Spielstand: Spieler: {self.number_of_ships - len(self.player_ships)};" f"Computer: {self.number_of_ships - len(self.computer_ships)}")
+#----------------------------------------------------------------#
 
+#----------------------------------------------------------------#
 # Programmstart
 if __name__ == "__main__":
 
