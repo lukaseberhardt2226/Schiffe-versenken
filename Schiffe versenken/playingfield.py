@@ -86,7 +86,7 @@ class PlayingField:
     def output(self, playingfield):
 
         # Buchstaben oben ausgeben
-        print("   " + " ".join([chr(ord("A") + i) for i in range(self.fieldsize)]))
+        print("\n   " + " ".join([chr(ord("A") + i) for i in range(self.fieldsize)]))
 
          # Spielfeld Zeile für Zeile ausgeben
         for i, line in enumerate(playingfield):

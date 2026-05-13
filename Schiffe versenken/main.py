@@ -31,6 +31,9 @@ class BattleShip:
     # Konstruktor
     def __init__(self):
 
+        #Ausgabe Spielname                 
+        print("\nSchiffe versenken Simulator")
+
         # Spielfeldgröße speichern
         self.fieldsize = fieldsize
 
@@ -70,7 +73,7 @@ class BattleShip:
                 self.playingfield.output(self.player.field)
 
                 # Position vom Spieler holen
-                position = self.position_set(self.player.field)
+                position = self.position_set(self.player.field, "Schiff platzieren: ")
 
                 # Position setzen
                 ship.horizontal_line = position[0]
@@ -87,7 +90,7 @@ class BattleShip:
                 if self.playingfield.check_collision(ship,self.player.field):
                     print("Ungültige Position")
                     continue
-
+                
                 # Schiff platzieren
                 self.playingfield.ships_place(ship,self.player.field)
                 break
@@ -128,32 +131,34 @@ class BattleShip:
 
 #----------------------------------------------------------------#
     # Positionen einlesen (Liest Benutzereingaben wie: A3, C4, usw.)
-    def position_set(self, playingfield):
+    def position_set(self, playingfield, text):
         while True:
 
              # Eingabe einlesen
-            position = input("Setze das Schiff: ").upper()
-
+            position = input(text).upper()
 
             # Spiel frühzeitig beenden
             if position == "EXIT":
                 print("Spiel beendet")
                 exit()
 
+            # try/except um Fehler abfangen bei ungültigen Eingaben
+            try:
 
-            # Eingabe zu kurz?
-            if len(position) < 2:
+                # Zahl aus Eingabe holen (Zeile) Bsp.: "A3" -> 3
+                horizontal_line = (int(position[1:]) - 1)
+
+                # Buchstaben in Zahl umwandeln (Spalte) Bsp.: "A" -> 0
+                vertical_line = (ord(position[0]) - ord("A"))
+
+            # try/except um Fehler abfangen bei ungültiger Eingabe
+            except:
+                print("Ungültige Eingabe")
                 continue
-
-            # Zeile bestimmen
-            horizontal_line = int(position[1:]) - 1
-
-            # Spalte bestimmen
-            vertical_line = ord(position[0]) - ord("A")
 
             # Prüfen ob innerhalb des Spielfelds
             if 0 <= horizontal_line < self.fieldsize and 0 <= vertical_line < self.fieldsize:
-
+               
                 # Prüfen ob dort bereits geschossen wurde
                 if playingfield[horizontal_line][vertical_line] in ["X", "~"]:
                     print("Hier wurde schon geschossen")
@@ -161,13 +166,14 @@ class BattleShip:
 
                 # Position zurückgeben
                 return[horizontal_line, vertical_line]
+            else:
+                print("Position außerhalb des Spielfelds") 
 #----------------------------------------------------------------#
 
 #----------------------------------------------------------------#
 
     # Spiel starten (Hauptschleife Ablauf: Spieler schießt, Com schießt, Spielfelder aktualisieren, Sieg prüfen )
     def start(self):
-        print("Schiffe versenken Simulator")
 
         # Computerfeld anzeigen
         self.playingfield.output(self.player.field)
@@ -176,11 +182,26 @@ class BattleShip:
         # Hauptschleife
         while True:
 
+            print("\nDein Spielfeld:")
+            self.playingfield.output(self.player.field)
+
+            print("\nComputer Spielfeld:")
+            self.playingfield.output(self.computer.field)
+
             # Spielerzug
             print("\nDu bist dran:")
 
+
             # Spieler Schussposition 
-            player_shot = self.position_set(self.computer.field)
+            player_shot = self.position_set(self.computer.field, "Schuss eingeben: ")
+
+            # Feld holen
+            field = self.computer.field[player_shot[0]][player_shot[1]]
+
+            # Prüfen ob dort schon geschossen wurde
+            if field in ["X", "~"]:
+                print("Hier wurde schon geschossen")
+                continue
 
             # Treffer?
             if self.playingfield.check_hit(player_shot,self.computer.ships):
@@ -214,15 +235,14 @@ class BattleShip:
             print(f"Computer schiesst auf {chr(ord('A') + computer_shot[1])}{computer_shot[0] + 1}")
 
             # Treffer?
-            if computer_shot in self.player.ships:
+            if self.playingfield.check_hit(computer_shot, self.player.ships):
+                print("Computer hat getroffen")
 
-                 # Treffer markieren
+                # Treffer markieren
                 self.player.field[computer_shot[0]][computer_shot[1]] = "X"
 
-                # Schiff entfernen
-                self.player.ships.remove(computer_shot)
-
             else:
+                print("Computer trifft Wasser")
                 # Wasser markieren
                 self.player.field[computer_shot[0]][computer_shot[1]] = "~"
 
@@ -254,4 +274,3 @@ if __name__ == "__main__":
     game.start()
 #----------------------------------------------------------------#
 
-#nächste änderung bei schuss wird noch zur schiffsplatzierung augefordert
