@@ -22,13 +22,13 @@ fieldsize = 5 # Größe des Spielfelds 10
 number_of_ships = 2 # Anzahl der Schiffe 5
 #----------------------------------------------------------------#
 
-#----------------------------------------------------------------#
+#------------------------------------------------S----------------#
 # Hauptklasse
 class BattleShip:
 #----------------------------------------------------------------#
 
-#----------------------------------------------------------------#
-    # Konstruktor
+#---------------------------------S-------------------------------#
+    # KonstruktorS
     def __init__(self):
 
         #Ausgabe Spielname                 
@@ -50,12 +50,7 @@ class BattleShip:
         self.player = player.Player("Spieler",self.fieldsize, self.number_of_ships)
 
         # Computer erstellen
-        self.computer = player.Player("Computer",self.fieldsize, self.number_of_ships)
-        # Spieler platziert Schiffe
-        self.player_place_ships()
-
-        # Computer platziert Schiffe
-        self.computer_place_ships()   
+        self.computer = player.Player("Computer",self.fieldsize, self.number_of_ships) 
 #----------------------------------------------------------------#
    
 #----------------------------------------------------------------#
@@ -174,10 +169,15 @@ class BattleShip:
 
     # Spiel starten (Hauptschleife Ablauf: Spieler schießt, Com schießt, Spielfelder aktualisieren, Sieg prüfen )
     def start(self):
+        
+        # Spieler platziert Schiffe
+        self.player_place_ships()
+
+        # Computer platziert Schiffe
+        self.computer_place_ships()  
 
         # Computerfeld anzeigen
         self.playingfield.output(self.player.field)
-
 
         # Hauptschleife
         while True:

@@ -16,11 +16,11 @@ class Player:
         # Schiffe erstellen
         all_ships = [
 
-                        ships.Ship("Two Ship", ships.two_ship),
-                        ships.Ship("Three Ship", ships.three_ship),
-                        ships.Ship("Four Ship", ships.four_ship),
-                        ships.Ship("Z Ship", ships.z_ship),
-                        ships.Ship("T Ship", ships.t_ship)
+                        ships.Ship("2er Schiff", ships.two_ship),
+                        ships.Ship("3er Schiff", ships.three_ship),
+                        ships.Ship("4er Schiff", ships.four_ship),
+                        ships.Ship("Z Schiff", ships.z_ship),
+                        ships.Ship("T Schiff", ships.t_ship)
                                                                     ]
 
         # Nur gewünschte Anzahl nehmen
