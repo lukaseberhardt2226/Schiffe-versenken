@@ -71,8 +71,14 @@ if __name__ == "__main__":
     controller.vibrate(0.5)    # Motor vibriert 0.5 Sekunden
     controller.set_led_single(1,(0,255,0))
     controller.help()
+    lol=controller.get_input()
     while True:
         eingabe = controller.get_input()
-        if eingabe:
-            print(eingabe)
-        time.sleep(0.05)
+        
+        if eingabe == "Links gedrückt":
+            print(" Cursor nach links bewegen")
+        elif eingabe == "Rechts gedrückt":
+            print(" Cursor nach rechts bewegen")
+        elif eingabe == "A gedrückt":
+            print("Schuss!!!!")
+            controller.vibrate(0.5)  # Feedback
