@@ -79,6 +79,10 @@ if __name__ == "__main__":
             print(" Cursor nach links bewegen")
         elif eingabe == "Rechts gedrückt":
             print(" Cursor nach rechts bewegen")
+        elif eingabe == "Runter gedrückt":
+            print(" Cursor nach Runter bewegen")
+        elif eingabe == "Oben gedrückt":
+            print(" Cursor nach Oben bewegen")
         elif eingabe == "A gedrückt":
             print("Schuss!!!!")
             controller.vibrate(0.5)  # Feedback
