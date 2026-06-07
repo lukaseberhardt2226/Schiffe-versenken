@@ -18,8 +18,8 @@ import playingfield
 
 #----------------------------------------------------------------#
 # Konfiguration
-fieldsize = 5 # Größe des Spielfelds 10
-number_of_ships = 2 # Anzahl der Schiffe 5
+fieldsize = 10 # Größe des Spielfelds 10
+number_of_ships = 1 # Anzahl der Schiffe 5
 #----------------------------------------------------------------#
 
 #------------------------------------------------S----------------#

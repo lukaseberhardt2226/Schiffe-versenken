@@ -1,3 +1,12 @@
+#PlayingField
+# - Erstellung des Spielfelds
+# - Platzierung von Schiffen
+# - Kollisionsprüfung
+# - Treffererkennung
+# - Verwaltung versenkter Schiffe
+# - Ausgabe des Spielfelds im Terminal
+
+
 class PlayingField:
 
 #----------------------------------------------------------------#  

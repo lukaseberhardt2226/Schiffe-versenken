@@ -1,3 +1,10 @@
+# Ship
+# - Verwaltung der Schiffsdaten
+# - Speicherung von Form und Position
+# - Berechnung der belegten Spielfeldfelder
+# - Rotation von Schiffen
+# - Trefferzähler für Versenkungen
+
 class Ship:
 
     def __init__(self, name, shape):
