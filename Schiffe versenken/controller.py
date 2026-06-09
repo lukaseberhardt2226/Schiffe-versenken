@@ -86,3 +86,17 @@ if __name__ == "__main__":
         elif eingabe == "A gedrückt":
             print("Schuss!!!!")
             controller.vibrate(0.5)  # Feedback
+
+
+#------- Weilche Tasten Gibt es ---------#
+# Aktionstasten:
+#   A ist normaler Schuss / Bestätigung
+#   Y Fähikeit beenden / Spiel beenden
+#   B Fähikeitentaste
+#   X Dreht Schiffe/ Fähikeiten
+# 
+# Bewegungstasten:
+#   <-  Bewegung nach Links 
+#   ->  Bewegung nach Rechts
+#   ⬇️   Bewegung nach Unten
+#   ⬆️   Bewegung nach rechts 
