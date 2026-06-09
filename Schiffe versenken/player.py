@@ -1,5 +1,13 @@
 import ships
 
+# Player-Klasse
+
+# Verwaltet alle Informationen eines Spielers:
+# - Spielername
+# - Spielfeld
+# - Schiffsliste
+# - Anzahl der verwendeten Schiffe
+
 class Player:
 
     def __init__(self, name, fieldsize, number_of_ships):
