@@ -8,8 +8,10 @@
 #   - mit der Taste A kann die kann die Fähikeit ausgewählt werden              -->     mit Y kann die Fähigkeitenauswahl beendet werden
 #   - danach kann sie durch die Bewegungstaste den Ort festgelegt werden        -->     mit Y kann die Fähigkeitenauswahl beendet werden
 #   - Folgend kann mit der Taste A die Fähikeit ausgeführt werden               -->     mit Y kann die Fähigkeitenauswahl beendet werden
+import controller
 
-
+class fähigkeiten(Controller):
+    def
 
 
 # Fähigkeit: Mine            Kosten: 2 Puntke 
