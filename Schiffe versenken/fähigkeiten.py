@@ -10,10 +10,11 @@
 #   - Folgend kann mit der Taste A die Fähikeit ausgeführt werden               -->     mit Y kann die Fähigkeitenauswahl beendet werden
 from controller import Controller
 from playingfield import PlayingField
-from cursor import cursor 
+from cursor import Cursor 
+import time 
 
 
-class Skill_Show():
+class Skill_Show:
 
     def __init__(self, controller):
         self.controller = controller
@@ -43,11 +44,14 @@ class Skill_Show():
 
 
 class Skills:
-    def __init__(self, controller, cursor, skill_show):
+    def __init__(self, controller, cursor, skill_show,spielfeld):
         self.controller = controller
         self.cursor = cursor
         self.skill_show = skill_show
-    
+        self.skills = ["Mine", "Scannen", "Air-Strike"]
+        self.ausgewaehlt = 0
+        self.spielfeld= spielfeld 
+
     def mine_legen(self):
         if self.skill_show.punkte>=2:
             self.skill_show.punkte_abziehen(2)
@@ -65,26 +69,63 @@ class Skills:
             x,y= self.cursor.x,self.cursor.y
             for dy in range(-1,2):
                 for dx in range(-1,2):
-                nx= x+dx
-               ny= y+dy
-            if 0 <= nx < 10 and 0 <= ny < 10:
-                if self.spielfeld.matrix[ny][nx] != "O":  # nicht Wasser
-                    objekte += 1
+                    nx= x+dx
+                    ny= y+dy
+                    if 0 <= nx < 10 and 0 <= ny < 10:
+                        if self.spielfeld.matrix[ny][nx] != "O":  # nicht Wasser
+                            objekte += 1
             print(f"{objekte} Objekte gefunden")
             self.controller.vibrate(0.5) 
                 
         else:
             print("zu wenig punkte")
 
-    def air_strike(self,x,y):
-        if self.skill_show.punkte>=5:
+    def air_strike(self):
+        if self.skill_show.punkte >= 5:
             self.skill_show.punkte_abziehen(5)
-            x,y= self.cursor.x,self.cursor.y
-            eingabe=self.controller.get_input()
-            if eingabe == "B gedrückt":
-            #air strike
+
+            modus = "zeile"
+            while True:
+                eingabe = self.controller.get_input()
+                if eingabe == "X gedrückt":
+                    if modus == "zeile":
+                        modus = "spalte"
+                    else:
+                        modus = "zeile"
+                    print(modus)  # anzeigen was gerade aktiv ist
+                elif eingabe == "A gedrückt":
+                    break
+            x, y = self.cursor.x, self.cursor.y
+            if modus == "zeile":
+                for i in range(10):
+                    self.spielfeld.matrix[y][i] = "X"
+            else:
+                for i in range(10):
+                    self.spielfeld.matrix[i][x] = "X"
         else:
             print("zu wenig punkte")
+
+    def select_skill(self):
+        while True:
+            eingabe = self.controller.get_input()
+            if eingabe == "Rechts gedrückt":
+                self.ausgewaehlt = (self.ausgewaehlt + 1) % 3
+                print(self.skills[self.ausgewaehlt])
+            elif eingabe == "Links gedrückt":
+                self.ausgewaehlt = (self.ausgewaehlt - 1) % 3
+                print(self.skills[self.ausgewaehlt])
+            elif eingabe == "A gedrückt":
+                # ausgewählte Fähigkeit ausführen
+                if self.ausgewaehlt == 0:
+                    self.mine_legen()
+                elif self.ausgewaehlt == 1:
+                    self.scannen()
+                elif self.ausgewaehlt == 2:
+                    self.air_strike()
+                break
+            elif eingabe == "Y gedrückt":
+                return None  # abbrechen
+            time.sleep(0.05)
 
 
 # Fähigkeit: Mine            Kosten: 2 Puntke 
