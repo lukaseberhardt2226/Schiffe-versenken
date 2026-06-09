@@ -8,10 +8,24 @@
 #   - mit der Taste A kann die kann die Fähikeit ausgewählt werden              -->     mit Y kann die Fähigkeitenauswahl beendet werden
 #   - danach kann sie durch die Bewegungstaste den Ort festgelegt werden        -->     mit Y kann die Fähigkeitenauswahl beendet werden
 #   - Folgend kann mit der Taste A die Fähikeit ausgeführt werden               -->     mit Y kann die Fähigkeitenauswahl beendet werden
-import controller
+from controller import Controller
+from cursor import cursor 
 
-class fähigkeiten(Controller):
-    def
+
+class Faehigkeiten:
+    def __init__(self, controller, cursor):
+        self.controller = controller
+        self.spielfeld = cursor
+        self.punkte = 0
+    
+    def mine_legen(self, x, y):
+        pass
+
+    def scannen(self,x,y):
+        pass
+
+    def air_strike(self,x,y):
+        pass
 
 
 # Fähigkeit: Mine            Kosten: 2 Puntke 
