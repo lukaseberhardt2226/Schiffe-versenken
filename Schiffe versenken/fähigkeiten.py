@@ -9,23 +9,82 @@
 #   - danach kann sie durch die Bewegungstaste den Ort festgelegt werden        -->     mit Y kann die Fähigkeitenauswahl beendet werden
 #   - Folgend kann mit der Taste A die Fähikeit ausgeführt werden               -->     mit Y kann die Fähigkeitenauswahl beendet werden
 from controller import Controller
+from playingfield import PlayingField
 from cursor import cursor 
 
 
-class Faehigkeiten:
-    def __init__(self, controller, cursor):
+class Skill_Show():
+
+    def __init__(self, controller):
         self.controller = controller
-        self.spielfeld = cursor
         self.punkte = 0
     
-    def mine_legen(self, x, y):
-        pass
+    def punkte_hinzufuegen(self, anzahl):
+        self.punkte+=anzahl
+        self.update_leds()
+        # punkte erhöhen
+        # LED updaten
+    
+    def punkte_abziehen(self, anzahl):
+        self.punkte-=anzahl
+        if self.punkte<0:
+            self.punkte=0
+        self.update_leds()
+        # punkte abziehen
+        # LED updaten
+    
+    def update_leds(self):
+        for i in range(8):
+            if i < self.punkte:
+                self.controller.set_led_single(i, (0, 255, 0))  # grün an
+            else:
+                self.controller.set_led_single(i, (0, 0, 0))
 
-    def scannen(self,x,y):
-        pass
+
+
+class Skills:
+    def __init__(self, controller, cursor, skill_show):
+        self.controller = controller
+        self.cursor = cursor
+        self.skill_show = skill_show
+    
+    def mine_legen(self):
+        if self.skill_show.punkte>=2:
+            self.skill_show.punkte_abziehen(2)
+            x= self.cursor.x
+            y= self.cursor.y
+            self.spielfeld.matrix[y][x]= "M"
+
+        else:
+            print("zu wenig punkte")
+
+    def scannen(self):
+        objekte=0
+        if self.skill_show.punkte>=3:
+            self.skill_show.punkte_abziehen(3)
+            x,y= self.cursor.x,self.cursor.y
+            for dy in range(-1,2):
+                for dx in range(-1,2):
+                nx= x+dx
+               ny= y+dy
+            if 0 <= nx < 10 and 0 <= ny < 10:
+                if self.spielfeld.matrix[ny][nx] != "O":  # nicht Wasser
+                    objekte += 1
+            print(f"{objekte} Objekte gefunden")
+            self.controller.vibrate(0.5) 
+                
+        else:
+            print("zu wenig punkte")
 
     def air_strike(self,x,y):
-        pass
+        if self.skill_show.punkte>=5:
+            self.skill_show.punkte_abziehen(5)
+            x,y= self.cursor.x,self.cursor.y
+            eingabe=self.controller.get_input()
+            if eingabe == "B gedrückt":
+            #air strike
+        else:
+            print("zu wenig punkte")
 
 
 # Fähigkeit: Mine            Kosten: 2 Puntke 
