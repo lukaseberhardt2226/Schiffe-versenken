@@ -21,7 +21,7 @@ skill_show = Skill_Show(controller)
 skills = Skills(controller, cursor, skill_show, spielfeld)
 
 # Startpunkte zum Testen
-skill_show.punkte_hinzufuegen(5)
+skill_show.punkte_hinzufuegen(10)
 
 # Zustand
 zustand = "spielen"
