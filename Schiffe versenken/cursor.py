@@ -1,5 +1,5 @@
 class Cursor:  
-    def __init__(self, feldgroesse=10):
+    def __init__(self, feldgroesse=9):
         self.x = 0
         self.y = 0
         self.feldgroesse = feldgroesse
@@ -7,7 +7,7 @@ class Cursor:
     def move(self,richtung):
         if richtung == "Rechts":
             self.x+=1
-            if self.x>=10:
+            if self.x>=9:
                 self.x=9
         if richtung == "Links":
             self.x-=1
@@ -15,7 +15,7 @@ class Cursor:
                 self.x=0
         if richtung == "Oben":
             self.y+=1
-            if self.y>=10:
+            if self.y>=9:
                 self.y=9
         if richtung == "Unten":
             self.y-=1
@@ -26,7 +26,6 @@ class Cursor:
         return (self.x, self.y)
     
 if __name__ == "__main__":
-  if __name__ == "__main__":
     cursor = Cursor()
     
     # Test Rechts
