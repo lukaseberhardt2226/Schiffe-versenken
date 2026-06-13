@@ -49,7 +49,6 @@ class Skills:
         self.skills = ["Mine", "Scannen", "Air-Strike"]
         self.ausgewaehlt = 0
         self.spielfeld= spielfeld 
-        self.modus="zeile"
 
     def mine_legen(self):
         if self.skill_show.punkte>=2:
