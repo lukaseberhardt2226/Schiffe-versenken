@@ -15,7 +15,7 @@ class Ship:
         # Schiffform speichern
         self.shape = shape
 
-        # Originale Schiffform speichern
+        # Originale Schiffform speichern (ohne rotation)
         self.original_shape = [line [:] for line in shape]
 
         # Trefferzähler
@@ -25,8 +25,10 @@ class Ship:
         self.horizontal_line = 0
         self.vertical_line = 0
     
+    # Spielfeldkoordinaten des Schiffes
     def get_positions(self):
 
+        # Leere liste zur "Speicherung"
         positions = []
 
          # Durch alle Zeilen der Form gehen
@@ -38,7 +40,7 @@ class Ship:
                 # Prüfen ob dort ein Schiffsteil ist
                 if self.shape[horizontal_line][vertical_line] == 1:
 
-                     # Echte Spielfeldposition berechnen
+                    # Echte Spielfeldposition berechnen
                     real_horizontal_line = (self.horizontal_line + horizontal_line)
                     real_vertical_line = (self.vertical_line + vertical_line)
 

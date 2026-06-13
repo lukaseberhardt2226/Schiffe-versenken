@@ -1,10 +1,10 @@
 #PlayingField
 # - Erstellung des Spielfelds
+# - Ausgabe des Spielfelds im Terminal
 # - Platzierung von Schiffen
 # - Kollisionsprüfung
 # - Treffererkennung
 # - Verwaltung versenkter Schiffe
-# - Ausgabe des Spielfelds im Terminal
 
 class PlayingField:
 
@@ -32,7 +32,7 @@ class PlayingField:
 
 #----------------------------------------------------------------#
 
-        # Schiffe platzieren
+    # Schiffe platzieren
     def ships_place(self, ship, playingfield):
 
         # Alle Positionen des Schiffs holen
