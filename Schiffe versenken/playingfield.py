@@ -6,13 +6,12 @@
 # - Verwaltung versenkter Schiffe
 # - Ausgabe des Spielfelds im Terminal
 
-
 class PlayingField:
 
 #----------------------------------------------------------------#  
      # Spielfeld erstellen (fieldsize = größe, O = unbeschossenes Feld)
     def create(self):
-        return [["O"] * self.fieldsize for _ in range(self.fieldsize)]
+        return [["O"] * self.fieldsize for i in range(self.fieldsize)]
 #----------------------------------------------------------------#  
 
 #----------------------------------------------------------------#  

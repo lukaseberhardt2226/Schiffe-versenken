@@ -6,7 +6,7 @@
 # - Trefferzähler für Versenkungen
 
 class Ship:
-
+    
     def __init__(self, name, shape):
 
         # Name des Schiffs

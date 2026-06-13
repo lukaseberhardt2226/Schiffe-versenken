@@ -1,4 +1,3 @@
-# Schiffe versenken main 
 
 # Funktionen:
 # - 10x10 Spielfeld
@@ -11,7 +10,6 @@
 #----------------------------------------------------------------#
 # Imports
 import random #random wird für zufällige Schiffpositionen und Computerschüsse benötigt.
-import ships
 import player
 import playingfield 
 #----------------------------------------------------------------#
@@ -47,10 +45,15 @@ class BattleShip:
         self.playingfield.fieldsize = (self.fieldsize)
 
         # Spieler erstellen
-        self.player = player.Player("Spieler",self.fieldsize, self.number_of_ships)
+        self.player = player.Player("Spieler", self.fieldsize, self.number_of_ships)
 
         # Computer erstellen
-        self.computer = player.Player("Computer",self.fieldsize, self.number_of_ships) 
+        self.computer = player.Player("Computer", self.fieldsize, self.number_of_ships)
+
+        # Spielfelder erstellen
+        self.player.field = self.playingfield.create()
+        self.computer.field = self.playingfield.create()
+
 #----------------------------------------------------------------#
    
 #----------------------------------------------------------------#
@@ -195,14 +198,6 @@ class BattleShip:
             # Spieler Schussposition 
             player_shot = self.position_set(self.computer.field, "Schuss eingeben: ")
 
-            # Feld holen
-            field = self.computer.field[player_shot[0]][player_shot[1]]
-
-            # Prüfen ob dort schon geschossen wurde
-            if field in ["X", "~"]:
-                print("Hier wurde schon geschossen")
-                continue
-
             # Treffer?
             if self.playingfield.check_hit(player_shot,self.computer.ships):
                 print("Schiff getroffen")
@@ -261,4 +256,4 @@ class BattleShip:
             # Punktestand anzeigen
             else: 
                 print(f"Spielstand: Spieler: {self.number_of_ships - len(self.computer.ships)};" f" Computer: {self.number_of_ships - len(self.player.ships)}")
-#----------------------------------------------------------------#
+#----------------------------------------------------------------# 
