@@ -1,6 +1,6 @@
 
 # Funktionen:
-# - 10x10 Spielfeld
+# - Konfigurierbares Spielfeld
 # - Spieler platziert Schiffe
 # - Computer Schiffe werden automatisch platziert
 # - Spieler vs Computer
@@ -111,6 +111,9 @@ class BattleShip:
 
             while True:
 
+                # Schiff zurücksetzen
+                ship.shape = [line [:] for line in ship.original_shape]
+
                 print(f"\nPlatziere: {ship.name}")
 
                 # Spielfeld anzeigen
@@ -187,7 +190,7 @@ class BattleShip:
         # Computer platziert Schiffe
         self.computer_place_ships()  
 
-        # Computerfeld anzeigen
+        # Spielerfeld anzeigen
         self.playingfield.output(self.player.field)
 
         # Hauptschleife
