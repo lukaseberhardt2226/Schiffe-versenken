@@ -5,6 +5,9 @@
 # - Rotation von Schiffen
 # - Trefferzähler für Versenkungen
 
+#----------------------------------------------------------------#
+
+#----------------------------------------------------------------#
 class Ship:
     
     def __init__(self, name, shape):
@@ -24,7 +27,12 @@ class Ship:
         # Startposition
         self.horizontal_line = 0
         self.vertical_line = 0
-    
+
+
+#----------------------------------------------------------------#
+
+#----------------------------------------------------------------#
+
     # Spielfeldkoordinaten des Schiffes
     def get_positions(self):
 
@@ -49,6 +57,10 @@ class Ship:
 
         return positions
 
+#----------------------------------------------------------------#
+
+#----------------------------------------------------------------#
+
     # Schiffe rotieren (Dreht die Schiff-Form um 90 Grad nach rechts)
     def rotate(self):
 
@@ -62,9 +74,7 @@ class Ship:
             new_line = []
 
             # Von unten nach oben durch die Zeilen gehen
-            for horizontal_line in range(
-
-                len(self.shape) - 1,-1,-1):
+            for horizontal_line in range(len(self.shape) - 1,-1,-1):
 
                 # Werte übernehmen
                 new_line.append(self.shape[horizontal_line][vertical_line])
@@ -75,7 +85,9 @@ class Ship:
         # Alte Form ersetzen
         self.shape = rotated_shape
 
+#----------------------------------------------------------------#
 
+#----------------------------------------------------------------#
 two_ship = [
              [1,1]
                     ]
@@ -101,3 +113,6 @@ t_ship = [
 
                         ]
 
+#----------------------------------------------------------------#
+
+#----------------------------------------------------------------#

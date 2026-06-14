@@ -8,6 +8,8 @@
 
 class PlayingField:
 
+#----------------------------------------------------------------#
+
 #----------------------------------------------------------------#  
 
      # Spielfeld erstellen (fieldsize = größe, O = unbeschossenes Feld)
@@ -15,6 +17,8 @@ class PlayingField:
         return [["O"] * self.fieldsize for i in range(self.fieldsize)]
 
 #----------------------------------------------------------------# 
+
+#----------------------------------------------------------------#
  
     # Spielfeld ausgeben (Gibt das Spielfeld im Terminal aus)
     def output(self, playingfield):
@@ -29,6 +33,8 @@ class PlayingField:
         for line in playingfield:
             print(f"{i + 1:2} " + " ".join(line))
             i += 1
+
+#----------------------------------------------------------------#
 
 #----------------------------------------------------------------#
 
@@ -49,6 +55,8 @@ class PlayingField:
             playingfield[horizontal_line][vertical_line] = "■"
 
 #----------------------------------------------------------------#  
+
+#----------------------------------------------------------------#
 
     #Kollisionen prüfen (liegt Schiff außerhalb?, überschneidung anderer Schiffe?)
     def check_collision(self, ship, playingfield):
@@ -75,6 +83,8 @@ class PlayingField:
 
         # Keine Kollision gefunden? schiff darf plaziert werden
         return False
+
+#----------------------------------------------------------------#
 
 #----------------------------------------------------------------#
 
@@ -106,5 +116,7 @@ class PlayingField:
 
         # Kein Treffer
         return False
+        
 #----------------------------------------------------------------#
 
+#----------------------------------------------------------------#

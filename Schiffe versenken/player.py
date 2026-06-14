@@ -8,6 +8,9 @@ import ships
 # - Schiffsliste
 # - Anzahl der verwendeten Schiffe
 
+#----------------------------------------------------------------#
+
+#----------------------------------------------------------------#
 class Player:
 
     def __init__(self, name, fieldsize, number_of_ships):
@@ -21,6 +24,10 @@ class Player:
         # Speichert hier das Spielfeld des Spielers
         self.field = []
 
+#----------------------------------------------------------------#
+
+#----------------------------------------------------------------#
+
         # Schiffe erstellen
         all_ships = [
 
@@ -33,3 +40,6 @@ class Player:
 
         # Nur gewünschte Anzahl nehmen
         self.ships = all_ships[:number_of_ships]
+
+#----------------------------------------------------------------#
+#----------------------------------------------------------------#
