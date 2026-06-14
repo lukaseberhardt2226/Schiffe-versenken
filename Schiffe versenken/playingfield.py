@@ -8,6 +8,11 @@
 
 class PlayingField:
 
+    def __init__(self, fieldsize):
+
+        # Spielfeldgröße speichern
+        self.fieldsize = fieldsize
+
 #----------------------------------------------------------------#
 
 #----------------------------------------------------------------#  
@@ -99,15 +104,16 @@ class PlayingField:
 
             # Prüfen ob getroffen
             if shot_position in positions:
-
+            
                 # Treffer zählen
                 ship.hits += 1
 
                 # Schiff versenkt?
                 if ship.hits == len(positions):
-
+                    
+                    # Meldung wenn Schiff versenkt wurde
                     print(f"{ship.name} versenkt")
-
+                    
                     # Schiff entfernen
                     ships.remove(ship)
 
@@ -116,7 +122,7 @@ class PlayingField:
 
         # Kein Treffer
         return False
-        
+
 #----------------------------------------------------------------#
 
 #----------------------------------------------------------------#

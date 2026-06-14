@@ -34,7 +34,7 @@ class BattleShip:
     # Konstruktor
     def __init__(self):
 
-        #Ausgabe Spielname                 
+        # Ausgabe Spielname
         print("\nSchiffe versenken Simulator")
 
         # Spielfeldgröße speichern
@@ -44,16 +44,13 @@ class BattleShip:
         self.number_of_ships = number_of_ships
 
         # Spielfeld Objekt erstellen
-        self.playingfield = (playingfield.PlayingField())
-
-        # Spielfeldgröße weitergeben
-        self.playingfield.fieldsize = (self.fieldsize)
+        self.playingfield = playingfield.PlayingField(self.fieldsize)
 
         # Spieler erstellen
-        self.player = player.Player("Spieler", self.fieldsize, self.number_of_ships)
+        self.player = player.Player("Spieler",self.fieldsize,self.number_of_ships)
 
         # Computer erstellen
-        self.computer = player.Player("Computer", self.fieldsize, self.number_of_ships)
+        self.computer = player.Player("Computer",self.fieldsize,self.number_of_ships)
 
         # Spielfelder erstellen
         self.player.field = self.playingfield.create()
@@ -163,7 +160,7 @@ class BattleShip:
                 ship.vertical_line = random.randint(0, self.fieldsize - 1)
 
                 # Zufällige Rotation
-                rotate = random.randint([0, 1])
+                rotate = random.randint(0, 1)
 
                 # Schiff rotieren
                 if rotate == 1:
@@ -211,13 +208,13 @@ class BattleShip:
 
             # Treffer?
             if self.playingfield.check_hit(player_shot,self.computer.ships):
-                print("Schiff getroffen")
+                print("Spieler hat getroffen")
 
                 # Treffer markieren
                 self.computer.field[player_shot[0]][player_shot[1]] = "X"
 
             else:
-                print("Wasser")
+                print("Spieler hat Wasser getroffen")
 
                 # Wasser markieren
                 self.computer.field[player_shot[0]][player_shot[1]] = "~"
