@@ -3,7 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox
 import random
 
-from main import BattleShip
+from battleship import BattleShip
 import ships
 
 # FARB PALETTE FÜR DAS SPIELFELD

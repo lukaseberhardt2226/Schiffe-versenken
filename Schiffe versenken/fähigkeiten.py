@@ -8,10 +8,7 @@
 #   - mit der Taste A kann die kann die Fähikeit ausgewählt werden              -->     mit Y kann die Fähigkeitenauswahl beendet werden
 #   - danach kann sie durch die Bewegungstaste den Ort festgelegt werden        -->     mit Y kann die Fähigkeitenauswahl beendet werden
 #   - Folgend kann mit der Taste A die Fähikeit ausgeführt werden               -->     mit Y kann die Fähigkeitenauswahl beendet werden
-from controller import Controller
-from playingfield import PlayingField
-from cursor import Cursor 
-import time 
+import time
 
 
 class Skill_Show:
@@ -19,6 +16,7 @@ class Skill_Show:
     def __init__(self, controller):
         self.controller = controller
         self.punkte = 0
+
     
     def punkte_hinzufuegen(self, anzahl):
         self.punkte+=anzahl
@@ -80,52 +78,60 @@ class Skills:
         else:
             print("zu wenig punkte")
 
-    def air_strike(self):
+    def air_strike_start(self):
         if self.skill_show.punkte >= 5:
+            self.modus = "zeile"       # Startmodus
+            return "airstrike"          # neuer Zustand
+        else:
+            print("zu wenig punkte")
+            return "menue"              # zurück, nicht genug Punkte
+        
+    def air_strike_taste(self, eingabe):
+        if eingabe == "X gedrückt":
+            # Modus wechseln
+            if self.modus == "zeile":
+                self.modus = "spalte"
+            else:
+                self.modus = "zeile"
+            print(self.modus)
+            return "airstrike"          # bleibt im Airstrike-Modus
+        
+        elif eingabe == "A gedrückt":
+            # Ausführen!
             self.skill_show.punkte_abziehen(5)
-
-            modus = "zeile"
-            while True:
-                eingabe = self.controller.get_input()
-                if eingabe == "X gedrückt":
-                    if modus == "zeile":
-                        modus = "spalte"
-                    else:
-                        modus = "zeile"
-                    print(modus)  # anzeigen was gerade aktiv ist
-                elif eingabe == "A gedrückt":
-                    break
             x, y = self.cursor.x, self.cursor.y
-            if modus == "zeile":
+            if self.modus == "zeile":
                 for i in range(10):
                     self.spielfeld.matrix[y][i] = "X"
             else:
                 for i in range(10):
                     self.spielfeld.matrix[i][x] = "X"
-        else:
-            print("zu wenig punkte")
+            return "fertig"             # fertig, zurück ins Spiel
+        
+        return "airstrike"              # andere Taste -> bleibt
+    
 
-    def select_skill(self):
-        while True:
-            eingabe = self.controller.get_input()
-            if eingabe == "Rechts gedrückt":
-                self.ausgewaehlt = (self.ausgewaehlt + 1) % 3
-                print(self.skills[self.ausgewaehlt])
-            elif eingabe == "Links gedrückt":
-                self.ausgewaehlt = (self.ausgewaehlt - 1) % 3
-                print(self.skills[self.ausgewaehlt])
-            elif eingabe == "A gedrückt":
-                # ausgewählte Fähigkeit ausführen
-                if self.ausgewaehlt == 0:
-                    self.mine_legen()
-                elif self.ausgewaehlt == 1:
-                    self.scannen()
-                elif self.ausgewaehlt == 2:
-                    self.air_strike()
-                break
-            elif eingabe == "Y gedrückt":
-                return None  # abbrechen
-            time.sleep(0.05)
+    def taste_im_menue(self, eingabe):
+        if eingabe == "Rechts gedrückt":
+            self.ausgewaehlt = (self.ausgewaehlt + 1) % 3
+            print(self.skills[self.ausgewaehlt])
+        elif eingabe == "Links gedrückt":
+            self.ausgewaehlt = (self.ausgewaehlt - 1) % 3
+            print(self.skills[self.ausgewaehlt])
+        elif eingabe == "A gedrückt":
+            # ausgewählte Fähigkeit ausführen
+            if self.ausgewaehlt == 0:
+                self.mine_legen()
+                return "fertig"
+            elif self.ausgewaehlt == 1:
+                self.scannen()
+                return "fertig"
+            elif self.ausgewaehlt == 2:
+                return self.air_strike_start()
+            
+        elif eingabe == "Y gedrückt":
+            return "abbruch"
+        return "menue"     # noch im Menü
 
 
 # Fähigkeit: Mine            Kosten: 2 Puntke 
