@@ -37,7 +37,7 @@ class BattleShipGUI:
         # INITIALISIERUNG DER SPIELLOGIK MODELL
         self.game = BattleShip()
         self.fieldsize = self.game.fieldsize
-        self.cell_size = 40 
+        self.cell_size = 40
         self.battle_phase = False 
         
         # überschreibt listen mit leeren O für saubere platzierung
