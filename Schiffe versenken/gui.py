@@ -24,10 +24,10 @@ class Colors:
 
     PREVIEW = "lightgreen"      # vorschau für gültige platzierung
     PREVIEW_ERROR = "salmon"    # vorschau für ungültige platzierung
-    CURSOR = "yellow"           # cursor
+    CURSOR = "black"           # cursor
 
 #
-# DIE STEUERUNGS
+# STEUERUNG
 #
 
 class InputController:
@@ -56,13 +56,13 @@ class InputController:
         self.root.bind("r", lambda e: self.rotate())
         self.root.bind("R", lambda e: self.rotate())
 
-    def move(self, dr, dc):
+    def move(self, r, c):
         # alte cursor grafik entfernen
         self.gui.clear_cursor_visuals(self.cursor_r, self.cursor_c)
 
         # neue koordinaten berechnen (bleibt im spielfeld)
-        self.cursor_r = max(0, min(self.gui.fieldsize - 1, self.cursor_r + dr))
-        self.cursor_c = max(0, min(self.gui.fieldsize - 1, self.cursor_c + dc))
+        self.cursor_r = max(0, min(self.gui.fieldsize - 1, self.cursor_r + r))
+        self.cursor_c = max(0, min(self.gui.fieldsize - 1, self.cursor_c + c))
 
         # neue cursor grafik anzeigen
         self.gui.draw_cursor_visuals(self.cursor_r, self.cursor_c)
@@ -90,7 +90,7 @@ class InputController:
 
 
 #
-# DIE GUI-KLASSE
+# GUI
 #
 
 class BattleShipGUI:
@@ -260,13 +260,13 @@ class BattleShipGUI:
             # jeweilige schiff aus liste
             aktuelles_schiff = self.player_ships[self.current_ship_index]
             # passt überschrift an
-            self.status_label.config(text=f"Bitte platziere {aktuelles_schiff.name} Pfeiltasten und Enter")
+            self.status_label.config(text=f"Bitte platziere {aktuelles_schiff.name} / Pfeiltasten und Enter")
         # startet nach letztem schiff kampfphase
         else:
             self.start_battle_phase()
 
     #
-    # PHASE 1: PLATZIEREN
+    # PHASE 1: PLATZIERPHASE
     #
 
     def place_ship_at_cursor(self, r, c):
@@ -309,14 +309,14 @@ class BattleShipGUI:
             self.draw_cursor_visuals(r, c)
 
     #
-    # PHASE 2: SCHIESSEN
+    # PHASE 2: KAMPFPHASE
     #
 
     def start_battle_phase(self):
         # kampfphase starten
         self.battle_phase = True
         # überschrift anpassen
-        self.status_label.config(text="Feuer Frei wähle ein Ziel")
+        self.status_label.config(text="Feuer frei, wähle ein Ziel!")
         
         # blendet rotationsbutton aus
         self.rotate_btn.pack_forget()
@@ -375,7 +375,7 @@ class BattleShipGUI:
         # wenn liste der schiffe leer
         if len(self.game.computer.ships) == 0:
             # pop up
-            messagebox.showinfo("Sieg", "Herzlichen Glückwunsch")
+            messagebox.showinfo("Sieg", "Herzlichen Glückwunsch du hast gewonnen!")
             # beendet programm
             self.main_window.quit()
             # nach letztem schiff abbruch 
@@ -407,7 +407,7 @@ class BattleShipGUI:
         if wurde_getroffen:
             self.game.player.field[reihe][spalte] = "X"
             self.player_canvas.itemconfig(self.player_rects[reihe][spalte], fill=Colors.HIT)
-            self.status_label.config(text="computer hat getroffen")
+            self.status_label.config(text="Computer hat getroffen!")
             
             if len(self.game.player.ships) < len(schiffe_vorher):
                 versenktes_schiff = [s for s in schiffe_vorher if s not in self.game.player.ships][0]
@@ -416,12 +416,12 @@ class BattleShipGUI:
         else:
             self.game.player.field[reihe][spalte] = "~"
             self.player_canvas.itemconfig(self.player_rects[reihe][spalte], fill=Colors.MISS)
-            self.status_label.config(text="wasser")
+            self.status_label.config(text="Feuer frei, wähle ein Ziel!")
 
         # wenn computer letztes schiff versenkt
         if len(self.game.player.ships) == 0:
             # pop up
-            messagebox.showerror("Spiel vorbei", "Computer hat gewonnen")
+            messagebox.showerror("Niederlage", "Du hast leider verloren!")
             # schließt fenster
             self.main_window.quit() 
         # falls nicht alle versenkt spieler ist wieder dran
