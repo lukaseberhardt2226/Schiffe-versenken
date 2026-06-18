@@ -24,7 +24,7 @@ class Colors:
 
     PREVIEW = "lightgreen"      # vorschau für gültige platzierung
     PREVIEW_ERROR = "salmon"    # vorschau für ungültige platzierung
-    CURSOR = "black"           # cursor
+    CURSOR = "black"            # cursor
 
 #
 # STEUERUNG
