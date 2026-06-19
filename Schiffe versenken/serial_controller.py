@@ -12,7 +12,7 @@ class SerialController:
         try:
             # timeout=0.1 verhindert, dass das programm einfriert, wenn nichts gesendet wird
             self.pico = serial.Serial(port, baudrate, timeout=0.1)
-            print(f"verbindung zu {port} erfolgreich hergestellt")
+            print(f"Verbindung zu {port} erfolgreich hergestellt")
             time.sleep(2) # warte kurz, bis die usb-verbindung stabil ist
         except Exception as e:
             print(f"fehler bei der verbindung zum controller: {e}")

@@ -4,6 +4,9 @@ from tkinter import messagebox
 import random
 from battleship import BattleShip
 from serial_controller import SerialController
+import threading 
+import queue      
+import time
 
 #
 # FARBEN
@@ -122,11 +125,6 @@ class BattleShipGUI:
         # controller wird in GUI eingebunden
         self.controller = InputController(self)
 
-        # HARDWARE CONTROLLER
-        # legt anschluss auf com3
-        self.hardware = SerialController(port="COM3") 
-
-        # --- HIERHER GEHÖREN DIE STARTWERTE (NUR EINMAL BEIM START) ---
         # widgets aufbauen
         self.create_widgets()
         
@@ -134,32 +132,6 @@ class BattleShipGUI:
         self.controller.set_cursor(0, 0) # start position
         self.update_status_text() # anweisung titel oben
         
-        # startet das ständige abhören des usb kabel
-        self.check_hardware_input() 
-        # -------------------------------------------------------------
-
-    def check_hardware_input(self):
-        # 1. prüfen ob die hardware überhaupt angeschlossen ist
-        if hasattr(self, 'hardware') and self.hardware and self.hardware.pico:
-            befehl = self.hardware.read_input()
-            
-            # 2. befehl vom pico in gui-aktionen übersetzen
-            if befehl:
-                if befehl == "UP":
-                    self.controller.move(-1, 0)
-                elif befehl == "DOWN":
-                    self.controller.move(1, 0)
-                elif befehl == "LEFT":
-                    self.controller.move(0, -1)
-                elif befehl == "RIGHT":
-                    self.controller.move(0, 1)
-                elif befehl == "A":
-                    self.controller.action() # entspricht "Enter" (schießen/platzieren)
-                elif befehl == "X" or befehl == "B":
-                    self.controller.rotate() # entspricht "R" (schiff drehen)
-                    
-        # 3. endlosschleife: ruft sich selbst alle 50 millisekunden wieder auf!
-        self.main_window.after(50, self.check_hardware_input)
 
 
     def create_widgets(self):
@@ -224,6 +196,56 @@ class BattleShipGUI:
                 rect_id = self.computer_canvas.create_rectangle(x1, y1, x2, y2, fill=Colors.WATER, outline=Colors.GRID)
                 row_rects.append(rect_id)
             self.computer_rects.append(row_rects)
+
+        #
+        # CONTROLLER
+        #
+
+        # legt anschluss auf com3
+        self.hardware = SerialController(port="COM3") 
+  
+        self.hardware_queue = queue.Queue()
+
+        self.hardware_thread = threading.Thread(target=self.read_pico_background, daemon=True)
+        self.hardware_thread.start()
+
+        self.check_hardware_queue()
+
+    def read_pico_background(self):
+            while True:
+                if hasattr(self, 'hardware') and self.hardware and self.hardware.pico:
+                    try:
+                        befehl = self.hardware.read_input()
+                        if befehl:
+                            # Befehl sicher in die Warteschlange legen
+                            self.hardware_queue.put(befehl)
+                    except Exception as e:
+                        print(f"Fehler beim Lesen der Hardware: {e}")
+    
+                time.sleep(0.01)
+
+    def check_hardware_queue(self):
+        try:
+            while True:
+                befehl = self.hardware_queue.get_nowait()
+                
+                if befehl == "UP":
+                    self.controller.move(-1, 0)
+                elif befehl == "DOWN":
+                    self.controller.move(1, 0)
+                elif befehl == "LEFT":
+                    self.controller.move(0, -1)
+                elif befehl == "RIGHT":
+                    self.controller.move(0, 1)
+                elif befehl == "A":
+                    self.controller.action() 
+                elif befehl in ["X", "B"]:
+                    self.controller.rotate() 
+                    
+        except queue.Empty:
+            pass
+
+        self.main_window.after(30, self.check_hardware_queue)
 
     #
     # VISUELLES FEEDBACK CURSOR
