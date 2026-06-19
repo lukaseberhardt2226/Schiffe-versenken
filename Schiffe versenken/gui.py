@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox
 import random
 from battleship import BattleShip
+from serial_controller import SerialController
 
 #
 # FARBEN
@@ -120,13 +121,46 @@ class BattleShipGUI:
         
         # controller wird in GUI eingebunden
         self.controller = InputController(self)
-        
+
+        # HARDWARE CONTROLLER
+        # legt anschluss auf com3
+        self.hardware = SerialController(port="COM3") 
+
+        # --- HIERHER GEHÖREN DIE STARTWERTE (NUR EINMAL BEIM START) ---
         # widgets aufbauen
         self.create_widgets()
         
-        # startwerte
+        # startwerte setzen
         self.controller.set_cursor(0, 0) # start position
         self.update_status_text() # anweisung titel oben
+        
+        # startet das ständige abhören des usb kabel
+        self.check_hardware_input() 
+        # -------------------------------------------------------------
+
+    def check_hardware_input(self):
+        # 1. prüfen ob die hardware überhaupt angeschlossen ist
+        if hasattr(self, 'hardware') and self.hardware and self.hardware.pico:
+            befehl = self.hardware.read_input()
+            
+            # 2. befehl vom pico in gui-aktionen übersetzen
+            if befehl:
+                if befehl == "UP":
+                    self.controller.move(-1, 0)
+                elif befehl == "DOWN":
+                    self.controller.move(1, 0)
+                elif befehl == "LEFT":
+                    self.controller.move(0, -1)
+                elif befehl == "RIGHT":
+                    self.controller.move(0, 1)
+                elif befehl == "A":
+                    self.controller.action() # entspricht "Enter" (schießen/platzieren)
+                elif befehl == "X" or befehl == "B":
+                    self.controller.rotate() # entspricht "R" (schiff drehen)
+                    
+        # 3. endlosschleife: ruft sich selbst alle 50 millisekunden wieder auf!
+        self.main_window.after(50, self.check_hardware_input)
+
 
     def create_widgets(self):
         # design festlegen
@@ -355,7 +389,12 @@ class BattleShipGUI:
             self.game.computer.field[reihe][spalte] = "X"
             # einfärbung des feldes
             self.computer_canvas.itemconfig(self.computer_rects[reihe][spalte], fill=Colors.HIT)
-            
+           # hardware vibrationsmotor led
+            if self.hardware and self.hardware.pico:
+                self.hardware.vibrate() # vibrationsmotor
+                self.hardware.set_led_all((255, 0, 0)) # alle LED rot
+                #licht nach x-ms aus
+                self.main_window.after(700, lambda: self.hardware.set_led_all((0, 0, 0)))
             # versenktes schiff markieren
             # wenn schiffanzahl kleiner
             if len(self.game.computer.ships) < len(schiffe_vorher):
@@ -370,7 +409,11 @@ class BattleShipGUI:
             self.game.computer.field[reihe][spalte] = "~"
             # einfärbung in verfehlt
             self.computer_canvas.itemconfig(self.computer_rects[reihe][spalte], fill=Colors.MISS)
-
+            # hardware led
+            if self.hardware and self.hardware.pico:
+                self.hardware.set_led_all((0, 0, 255)) # alle LED blau
+                #  licht nach x-msek aus
+                self.main_window.after(700, lambda: self.hardware.set_led_all((0, 0, 0)))
         # abbruchbedinung
         # wenn liste der schiffe leer
         if len(self.game.computer.ships) == 0:
@@ -385,7 +428,7 @@ class BattleShipGUI:
         # wenn computer schießt keine aktionen mehr möglich
         self.battle_phase = False 
         # wartet x-millisekungen dann wird computer schuss ausgeführt
-        self.main_window.after(300, self.computer_shoot)
+        self.main_window.after(700, self.computer_shoot)
 
     def computer_shoot(self):
         # schleife für schusse des computer
