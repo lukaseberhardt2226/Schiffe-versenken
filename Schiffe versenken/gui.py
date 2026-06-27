@@ -3,10 +3,15 @@ from tkinter import ttk
 from tkinter import messagebox
 import random
 from battleship import BattleShip
-from serial_controller import SerialController
 import threading 
 import queue      
 import time
+
+#GUI soll auch ohne controller funktionieren
+try:
+    from serial_controller import SerialController
+except:
+    SerialController = None
 
 #
 # FARBEN
@@ -98,12 +103,12 @@ class InputController:
 #
 
 class BattleShipGUI:
-    def __init__(self, master):
+    def __init__(self, master, game):
         self.main_window = master
         self.main_window.title("Schiffe versenken")
         
         # spiellogik (übernahme aus battleship.py)
-        self.game = BattleShip()
+        self.game = game
         self.fieldsize = self.game.fieldsize
         self.cell_size = 40 #in pixel
         self.battle_phase = False #beginn in platzierphase
@@ -121,6 +126,9 @@ class BattleShipGUI:
         self.player_rects = []
         self.computer_rects = []
         self.preview_positions = [] 
+
+        # intelligenter Computerschuss (Speichert Zielpositionen)
+        self.target_positions = []
         
         # controller wird in GUI eingebunden
         self.controller = InputController(self)
@@ -200,16 +208,20 @@ class BattleShipGUI:
         #
         # CONTROLLER
         #
-
-        # legt anschluss auf com3
-        self.hardware = SerialController(port="COM3") 
+        if SerialController:
+            # legt anschluss auf com3
+            self.hardware = SerialController(port="COM3") 
   
-        self.hardware_queue = queue.Queue()
+            self.hardware_queue = queue.Queue()
 
-        self.hardware_thread = threading.Thread(target=self.read_pico_background, daemon=True)
-        self.hardware_thread.start()
+            self.hardware_thread = threading.Thread(target=self.read_pico_background, daemon=True)
+            self.hardware_thread.start()
 
-        self.check_hardware_queue()
+            self.check_hardware_queue()
+
+        else:
+            self.hardware = None
+            print("Kein SerialController verbunden")
 
     def read_pico_background(self):
             while True:
@@ -453,14 +465,35 @@ class BattleShipGUI:
         self.main_window.after(700, self.computer_shoot)
 
     def computer_shoot(self):
-        # schleife für schusse des computer
-        while True:
-            # generiert zufällige reihe/spalte
-            reihe = random.randint(0, self.fieldsize - 1)
-            spalte = random.randint(0, self.fieldsize - 1)
-            # schaut ob auf das feld schon geschossen wurde falls ja schleife erneut
-            if self.game.player.field[reihe][spalte] not in ["X", "~"]:
-                break 
+
+        # prüfen, ob bereits Zielpositionen aus einem vorherigen Treffer vorhanden sind
+        # falls ja, werden diese bevorzugt beschossen
+        if self.target_positions:
+
+            # Erstes gespeichertes Zielfeld entnehmen
+            while self.target_positions:
+                reihe, spalte = self.target_positions.pop(0) #pop holt element aus liste und löscht es aus der Liste
+
+                if self.game.player.field[reihe][spalte] not in ["X", "~"]:
+                    break
+         
+            else:
+
+                # falls keine Zielpositionen vorhanden sind, wird wieder zufällig geschossen
+                while True:
+                    reihe = random.randint(0, self.fieldsize - 1)
+                    spalte = random.randint(0, self.fieldsize - 1)
+        
+                    if self.game.player.field[reihe][spalte] not in ["X", "~"]:
+                        break
+        else:
+            # normal schleife für schuesse des computer
+            while True:
+                reihe = random.randint(0, self.fieldsize - 1)
+                spalte = random.randint(0, self.fieldsize - 1)
+
+                if self.game.player.field[reihe][spalte] not in ["X", "~"]:
+                    break
 
         # computer feuert auf die gefunden koordinaten
         schuss = [reihe, spalte]
@@ -470,11 +503,35 @@ class BattleShipGUI:
 
         # treffer verarbeiten
         if wurde_getroffen:
+
+            # Angrenzende Felder des Treffers berechnen, werden für die nächsten Computerzüge gespeichert
+            nachbarn = [
+                            (reihe - 1, spalte),   # oben
+                            (reihe + 1, spalte),   # unten
+                            (reihe, spalte - 1),   # links
+                            (reihe, spalte + 1)    # rechts
+                                                                ]
+            for r, s in nachbarn:
+                
+                # prüfen, ob sich das Feld innerhalb des Spielfelds befindet
+                if 0 <= r < self.fieldsize and 0 <= s < self.fieldsize:
+                    
+                    # nur Felder speichern, die noch nicht beschossen wurden
+                    if self.game.player.field[r][s] not in ["X", "~"]:
+                        
+                        # doppelte Zielpositionen vermeiden
+                        if (r, s) not in self.target_positions:
+                            self.target_positions.append((r, s))
+                                                               
             self.game.player.field[reihe][spalte] = "X"
             self.player_canvas.itemconfig(self.player_rects[reihe][spalte], fill=Colors.HIT)
             self.status_label.config(text="Computer hat getroffen!")
             
             if len(self.game.player.ships) < len(schiffe_vorher):
+
+                # Zielsuche zurücksetzen, bei versenktem schiff
+                self.target_positions.clear()
+
                 versenktes_schiff = [s for s in schiffe_vorher if s not in self.game.player.ships][0]
                 for pos in versenktes_schiff.get_positions():
                     self.player_canvas.itemconfig(self.player_rects[pos[0]][pos[1]], fill=Colors.SUNK)
@@ -493,8 +550,9 @@ class BattleShipGUI:
         else:
             self.battle_phase = True
 
-# hauptprogramm starten
-if __name__ == "__main__":
-    game = tk.Tk()
-    app = BattleShipGUI(game)
-    game.mainloop()
+# hauptprogramm wird jetzt in main.py gestartet
+
+#if __name__ == "__main__":
+    #game = tk.Tk()
+    #app = BattleShipGUI(game)
+    #game.mainloop()

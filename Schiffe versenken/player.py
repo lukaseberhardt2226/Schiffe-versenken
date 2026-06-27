@@ -28,18 +28,29 @@ class Player:
 
 #----------------------------------------------------------------#
 
-        # Schiffe erstellen
-        all_ships = [
+# Schiffe erstellen
+# Falls mehr Schiffe als Schiffstypen -> wiederholung der vorhandenen Schiffstypen
 
-                        ships.Ship("2er Schiff", ships.two_ship),
-                        ships.Ship("3er Schiff", ships.three_ship),
-                        ships.Ship("4er Schiff", ships.four_ship),
-                        ships.Ship("Z Schiff", ships.z_ship),
-                        ships.Ship("T Schiff", ships.t_ship)
-                                                                    ]
+        ship_types = [
 
-        # Nur gewünschte Anzahl nehmen
-        self.ships = all_ships[:number_of_ships]
+                        ("2er Schiff", ships.two_ship),
+                        ("3er Schiff", ships.three_ship),
+                        ("4er Schiff", ships.four_ship),
+                        ("Z Schiff", ships.z_ship),
+                        ("T Schiff", ships.t_ship)
 
-#----------------------------------------------------------------#
+                                                                ]
+
+        # Leere Schiffsliste erstellen
+        self.ships = []
+
+        # Gewünschte Anzahl an Schiffen erzeugen
+        for i in range(number_of_ships):
+
+                # "%" (Modulo) sorgt dafür, dass nach dem letzten Schiff wieder beim ersten begonnen wird
+                name, shape = ship_types[i % len(ship_types)]
+
+                # Neues Schiff erzeugen und zur Liste hinzufügen
+                self.ships.append(ships.Ship(f"{name} {i + 1}",shape))
+
 #----------------------------------------------------------------#
